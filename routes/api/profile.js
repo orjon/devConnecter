@@ -6,7 +6,7 @@ const { check, validationResult } = require('express-validator');
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
 
-//GET api/profile/me
+// GET api/profile/me
 // Get current users profile
 // Private
 router.get(
@@ -20,13 +20,14 @@ router.get(
       }
       res.json(profile)
     } catch (error) {
+      console.log('error in: GET api/profile/me')
       console.error(error.message);
       res.status(500).send('Server Error')
     }
     
   });
 
-  //POST api/profile
+  // POST api/profile
   // Create or update user profile
   // Private
   router.post(
@@ -84,7 +85,7 @@ router.get(
         res.json(profile)
 
       } catch (error){
-        console.log('POST api/profile')
+        console.log('error in: POST api/profile')
         console.error(error.message),
         res.status(500).send('Sever Error')
       }
@@ -100,7 +101,7 @@ router.get(
       const profiles = await Profile.find().populate('user', ['name','avatar'])
       res.json(profiles)
     } catch (error) {
-      console.log('GET api/profile/user/:user_id')
+      console.log('error in: GET api/profile/user/:user_id')
       console.error(error.message)
       res.status(500).send('Sever Error')
     }
@@ -120,7 +121,7 @@ router.get(
 
       res.json(profile);
     } catch (error) {
-      console.log('GET api/profile/user/:user_id')
+      console.log('error in: GET api/profile/user/:user_id')
       console.error(error.message)
       if (error.kind === 'ObjectId') {
         return res.status(400).json({ msg : 'Profile not found'})
@@ -138,14 +139,68 @@ router.get(
       // Remove profile
       await Profile.findOneAndRemove({ user: req.user.id });
       await User.findOneAndRemove({ _id: req.user.id });
-      console.log('User deleted');
       res.json({ msg: 'User deleted'});
     } catch (error) {
-      console.log('DELETE api/profile/')
+      console.log('error in: DELETE api/profile/')
       console.error(error.message)
       res.status(500).send('Server Error')
     }
   })
+
+  // PUT api/profile/experience
+  // add profileexperience
+  // private
+  router.put(
+    '/experience',
+    [
+      auth,
+      [
+        check('title', 'Title is required').not().isEmpty(),
+        check('company', 'Company is required').not().isEmpty(),
+        check('from', 'From date is required').not().isEmpty(),
+      ]
+    ],
+    async (req,res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+      }
+
+      const {
+        title,
+        company,
+        location,
+        from,
+        to,
+        current,
+        description
+      } = req.body
+
+      const newExp = {
+        title: title,
+        company: company,
+        location: location,
+        from: from,
+        to: to,
+        current: current,
+        description: description
+      }
+
+      try {
+        const profile = await Profile.findOne({ user: req.user.id });
+
+        // Push to front of array (most recent first)
+        profile.experience.unshift(newExp)
+
+        await profile.save();
+        res.json(profile);
+
+      } catch (error) {
+        console.error(error.message)
+        res.status(500).send('Server Error')
+      }
+    }
+  )
 
 
 module.exports = router;
