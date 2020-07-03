@@ -15,15 +15,13 @@ router.get(
   async (req,res) => {
     try {
       const profile = await Profile.findOne({user : req.user.id}).populate('user',['name','avatar']);
-
       if (!profile){
         return res.status(400).json({ msg : 'No profile for this user'})
       }
-
       res.json(profile)
-    }catch(error){
-      console.error(error);
-      res.ststus(500).send('Server Error')
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('Server Error')
     }
     
   });
@@ -42,7 +40,6 @@ router.get(
     ],
     async (req, res) => {
       const errors =validationResult(req);
-      console.log('errors:',errors.array())
       if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array()})
       }
@@ -86,17 +83,11 @@ router.get(
         await profile.save();
         res.json(profile)
 
-        
-
-      } catch(error){
-        console.error(error),
+      } catch (error){
+        console.log('POST api/profile')
+        console.error(error.message),
         res.status(500).send('Sever Error')
       }
-
-      
-      console.log(profileFields.skills)
-
-      res.send('hello')
 
     }
   )
@@ -109,7 +100,8 @@ router.get(
       const profiles = await Profile.find().populate('user', ['name','avatar'])
       res.json(profiles)
     } catch (error) {
-      console.error(error)
+      console.log('GET api/profile/user/:user_id')
+      console.error(error.message)
       res.status(500).send('Sever Error')
     }
   })
@@ -128,7 +120,8 @@ router.get(
 
       res.json(profile);
     } catch (error) {
-      console.error(error)
+      console.log('GET api/profile/user/:user_id')
+      console.error(error.message)
       if (error.kind === 'ObjectId') {
         return res.status(400).json({ msg : 'Profile not found'})
       }
@@ -140,18 +133,16 @@ router.get(
   // DELETE api/profile/
   // delete profile, user and posts
   // private
-  router.delete('', auth, async (req,res) => {
+  router.delete('/', auth, async (req,res) => {
     try {
       // Remove profile
-      await Profile.findOneAndRemove({user: req.user_id})
-      await User.findOneAndRemove({_id: req.user_id})
+      await Profile.findOneAndRemove({ user: req.user.id });
+      await User.findOneAndRemove({ _id: req.user.id });
+      console.log('User deleted');
       res.json({ msg: 'User deleted'});
     } catch (error) {
-      console.error(error)
-      if (error.kind === 'ObjectId') {
-        return res.status(400).json({ msg : 'Profile not found'})
-      }
-      
+      console.log('DELETE api/profile/')
+      console.error(error.message)
       res.status(500).send('Server Error')
     }
   })
