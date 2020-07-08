@@ -79,6 +79,7 @@ async (req,res) => {
 
 
   } catch(error) {
+    console.log('error in: POST api/users')
     console.error(error.message);
     res.status(500).sent('Server error.')
   }
