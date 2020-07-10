@@ -1,8 +1,17 @@
 import React, { Fragment, useState } from 'react';
+
+//Connect to redux
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+//import setAlert action
+import { setAlert } from '../../actions/alert';
+
+import PropTypes from 'prop-types';
+
+
 // import axios from 'axios';
 
-const Register = () => {
+const Register = ({ setAlert }) => {
 
   const [ formData, setFormData ] = useState({
     name: '',
@@ -11,13 +20,14 @@ const Register = () => {
     password2: ''
   })
 
-  const { name, email, password, password2} = formData;
+  const { name, email, password, password2 } = formData;
 
-  const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value})
+  const onChange = e => setFormData( { ...formData, [e.target.name]: e.target.value } )
 
   const onSubmit = async e => {
     e.preventDefault()
     if (password !== password2) {
+      setAlert('Passwords do not match', 'danger')
       console.log('Password do not match')
     } else {
       console.log('SUCCESS')
@@ -71,10 +81,7 @@ const Register = () => {
             value= { email }
             onChange= {e => onChange(e)}
           />
-          <small className='form-text'
-            >This site uses Gravatar so if you want a profile image, use a
-            Gravatar email</small
-          >
+          <small className='form-text'>This site uses Gravatar so if you want a profile image, use a Gravatar email</small>
         </div>
         <div className='form-group'>
           <input
@@ -106,7 +113,14 @@ const Register = () => {
         Already have an account? <Link to='/login'>Sign In</Link>
       </p>
     </Fragment>
-  )
+  );
+};
+
+Register.propTypes = {
+  setAlert: PropTypes.func.isRequired,
 }
 
-export default Register;
+{/* //Connect to redux pass ( state, { actions-to-use }) */}
+
+export default connect(null, { setAlert })(Register);
+
