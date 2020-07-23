@@ -75,7 +75,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
             type='text'
             placeholder='Name'
             name='name'
-            // required //html5 client side validation
+            required //html5 client side validation
             value= { name }
             onChange= {e => onChange(e)}
           />
@@ -85,7 +85,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
             type='email'
             placeholder='Email Address'
             name='email'
-            // required //html5 client side validation
+            required //html5 client side validation
             value= { email }
             onChange= {e => onChange(e)}
           />
@@ -96,7 +96,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
             type='password'
             placeholder='Password'
             name='password'
-            // minLength='6'
+            minLength='6'
             value= { password }
             onChange= {e => onChange(e)} 
           />
@@ -106,7 +106,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
             type='password'
             placeholder='Confirm Password'
             name='password2'
-            // minLength='6'
+            minLength='6'
             value= { password2 }
             onChange= {e => onChange(e)} 
           />
