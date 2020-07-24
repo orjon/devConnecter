@@ -3,7 +3,10 @@ import { SET_ALERT, REMOVE_ALERT } from '../actions/types';
 const initialState=[]; 
 
 export default function(state = initialState, action) {
+
+
   const { type, payload } = action
+  // ie: action.type, action.payload
   switch(type){
     case SET_ALERT:
       return [...state, payload];

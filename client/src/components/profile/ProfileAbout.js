@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 
-const ProfileAbout = ({ profile: { bio, skills, user: { name} }}) => {
+const ProfileAbout = ({ profile: { bio, skills, user: { name } }}) => {
   return (
     <div className='profile-about bg-light p-2'>
       {bio && (
