@@ -147,7 +147,7 @@ router.put('/like/:id', auth, async (req, res) => {
 })
 
 // PUT api/posts/like/:id
-// Like a post
+// Unike a post
 // private
 router.put('/unlike/:id', auth, async (req, res) => {
   try {
